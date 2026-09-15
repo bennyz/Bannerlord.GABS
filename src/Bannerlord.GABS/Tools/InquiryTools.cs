@@ -23,7 +23,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                 // Check for Incident (random event popup) first — most common blocker (v1.3.x+)
                 if (InquiryState.CurrentIncident != null)
                 {
@@ -181,7 +181,7 @@ public partial class InquiryTools
         });
     }
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
     private static string? FormatIncidentHint(TaleWorlds.CampaignSystem.Incidents.IncidentHint hint)
     {
         var parts = new List<string>();
@@ -212,7 +212,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                 // Handle Incident (random event popup, v1.3.x+)
                 if (InquiryState.CurrentIncident != null && InquiryState.CurrentIncidentView != null)
                 {

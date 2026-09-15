@@ -66,7 +66,7 @@ public partial class PartyTools
             if (hero.Clan != Clan.PlayerClan)
                 return new { error = $"{hero.Name} does not belong to the player's clan" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                 var newParty = MobilePartyHelper.CreateNewClanMobileParty(hero, Clan.PlayerClan);
 #else
             MobilePartyHelper.CreateNewClanMobileParty(hero, Clan.PlayerClan, out bool _);
@@ -290,7 +290,7 @@ public partial class PartyTools
                     if (settlement == null)
                         return new { error = $"Settlement not found: {target}" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         SetPartyAiAction.GetActionForVisitingSettlement(party, settlement, MobileParty.NavigationType.Default, false, false);
 #else
                     SetPartyAiAction.GetActionForVisitingSettlement(party, settlement);
@@ -305,7 +305,7 @@ public partial class PartyTools
                     if (MobileParty.MainParty == null)
                         return new { error = "No player party to escort" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         SetPartyAiAction.GetActionForEscortingParty(party, MobileParty.MainParty, MobileParty.NavigationType.Default, false, false);
 #else
                     SetPartyAiAction.GetActionForEscortingParty(party, MobileParty.MainParty);
@@ -316,7 +316,7 @@ public partial class PartyTools
 
                 case "hold":
                 {
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         party.SetMoveModeHold();
 #else
                     party.Ai.SetMoveModeHold();
@@ -331,7 +331,7 @@ public partial class PartyTools
                     if (targetParty == null)
                         return new { error = $"Target party not found: {target}" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         party.SetMoveEngageParty(targetParty, MobileParty.NavigationType.Default);
 #else
                     party.Ai.SetMoveEngageParty(targetParty);
@@ -350,7 +350,7 @@ public partial class PartyTools
                     if (!settlement.IsFortification)
                         return new { error = $"{settlement.Name} is not a fortification" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         party.SetMoveBesiegeSettlement(settlement, MobileParty.NavigationType.Default);
 #else
                     party.Ai.SetMoveBesiegeSettlement(settlement);
@@ -369,7 +369,7 @@ public partial class PartyTools
                     if (!settlement.IsVillage)
                         return new { error = $"{settlement.Name} is not a village" };
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                         party.SetMoveRaidSettlement(settlement, MobileParty.NavigationType.Default, false);
 #else
                     party.Ai.SetMoveRaidSettlement(settlement);

@@ -528,7 +528,7 @@ public partial class CoreTools
                 /// Array of save file name strings
                 saves = saveNames,
                 /// Currently active save slot name
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                 activeSave = MBSaveLoad.ActiveSaveSlotName,
 #else
                 activeSave = ActiveSaveSlotNameField?.Invoke(),

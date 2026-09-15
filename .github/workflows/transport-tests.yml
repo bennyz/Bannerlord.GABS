@@ -1,0 +1,11 @@
+name: Transport regression
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  disconnect:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet run --project tests/TransportRegression -c Release

@@ -41,7 +41,7 @@ public class SubModule : MBSubModuleBase
             _harmony.PatchAll(typeof(SubModule).Assembly);
             Log("Harmony patches applied");
 
-#if v1313 || v1315 || v152
+#if v1313 || v1315 || v152 || v153
                 // Manually patch Incident system (random events) — types are in module assemblies (v1.3.x+)
                 IncidentPatches.Apply(_harmony);
 #endif
