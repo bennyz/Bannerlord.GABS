@@ -1,4 +1,4 @@
-﻿using Lib.GAB.Events;
+using Lib.GAB.Events;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +66,7 @@ public class HeroEventBehavior : BridgeEventBehaviorBase
         CampaignEvents.PlayerTraitChangedEvent.AddNonSerializedListener(this, OnPlayerTraitChanged);
 
         // Family & romance
-#if v1313 || v1315
+#if v1313 || v1315 || v152
             CampaignEvents.BeforeHeroesMarried.AddNonSerializedListener(this, OnMarriage);
 #else
         CampaignEvents.HeroesMarried.AddNonSerializedListener(this, OnMarriage);
@@ -117,7 +117,7 @@ public class HeroEventBehavior : BridgeEventBehaviorBase
         });
     }
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
         private void OnHeroPrisonerReleased(Hero? prisoner, PartyBase? party, IFaction? capturerFaction, EndCaptivityDetail detail, bool showNotification)
 #else
     private void OnHeroPrisonerReleased(Hero? prisoner, PartyBase? party, IFaction? capturerFaction, EndCaptivityDetail detail)

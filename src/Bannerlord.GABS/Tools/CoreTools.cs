@@ -1,4 +1,4 @@
-﻿// ReSharper disable InvalidXmlDocComment
+// ReSharper disable InvalidXmlDocComment
 // ReSharper disable UnusedMember.Global
 
 using HarmonyLib;
@@ -315,17 +315,17 @@ public partial class CoreTools
         });
     }
 
-    [Tool("core/set_time_speed", Description = "Set the campaign map time speed (0 = pause, 1-4 = speed multiplier).")]
+    [Tool("core/set_time_speed", Description = "Set the campaign map time speed (0 = pause, 1-50 = speed multiplier). Speeds above the normal UI limit are intended for unattended playtest setup and campaign-time scenarios.")]
     public partial Task<object> SetTimeSpeed(
-        [ToolParameter(Description = "Speed value: 0 to pause, 1-4 for game speed")] int speed)
+        [ToolParameter(Description = "Speed value: 0 to pause, 1-50 for game speed; 10 is a practical playtest default")] int speed)
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
             if (Campaign.Current == null)
                 return new { error = "No active campaign" };
 
-            if (speed is < 0 or > 4)
-                return new { error = "Speed must be between 0 and 4" };
+            if (speed is < 0 or > 50)
+                return new { error = "Speed must be between 0 and 50" };
 
             if (speed == 0)
             {
@@ -528,7 +528,7 @@ public partial class CoreTools
                 /// Array of save file name strings
                 saves = saveNames,
                 /// Currently active save slot name
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 activeSave = MBSaveLoad.ActiveSaveSlotName,
 #else
                 activeSave = ActiveSaveSlotNameField?.Invoke(),

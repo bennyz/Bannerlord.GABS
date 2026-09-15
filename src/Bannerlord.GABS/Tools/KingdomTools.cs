@@ -1,4 +1,4 @@
-﻿// ReSharper disable InvalidXmlDocComment
+// ReSharper disable InvalidXmlDocComment
 // ReSharper disable UnusedMember.Global
 
 using Lib.GAB.Tools;
@@ -89,7 +89,7 @@ public partial class KingdomTools
                     /// Number of fiefs
                     fiefCount = k.Fiefs?.Count ?? 0,
                     /// Total military strength
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                         strength = Math.Round(k.CurrentTotalStrength, 0),
 #else
                     strength = Math.Round(k.TotalStrength, 0),
@@ -137,7 +137,7 @@ public partial class KingdomTools
                 /// Kingdom culture name
                 culture = kingdom.Culture?.Name?.ToString(),
                 /// Total military strength
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                     strength = Math.Round(kingdom.CurrentTotalStrength, 0),
 #else
                 strength = Math.Round(kingdom.TotalStrength, 0),
@@ -271,7 +271,7 @@ public partial class KingdomTools
                 /// Array of companion name strings
                 companions = clan.Companions?.Where(c => c != null).Select(c => c.Name?.ToString()).ToList(),
                 /// Array of lord objects with name and age
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                     lords = clan.AliveLords?.Where(l => l != null).Select(l => new
 #else
                 lords = clan.Lords?.Where(l => l != null && l.IsAlive).Select(l => new
@@ -291,7 +291,7 @@ public partial class KingdomTools
                 /// Maximum companion count
                 companionLimit = clan.CompanionLimit,
                 /// Maximum commander count
-                commanderLimit = clan.CommanderLimit,
+                commanderLimit = Campaign.Current.Models.ClanTierModel.GetPartyLimitForTier(clan, clan.Tier),
             };
         });
     }

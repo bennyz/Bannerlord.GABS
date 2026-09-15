@@ -1,4 +1,4 @@
-﻿// ReSharper disable InvalidXmlDocComment
+// ReSharper disable InvalidXmlDocComment
 // ReSharper disable UnusedMember.Global
 
 using Bannerlord.GABS.Patches;
@@ -23,7 +23,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 // Check for Incident (random event popup) first — most common blocker (v1.3.x+)
                 if (InquiryState.CurrentIncident != null)
                 {
@@ -39,9 +39,7 @@ public partial class InquiryTools
                             /// Option title text
                             title = incident.GetOptionText(i)?.ToString(),
                             /// Hint text for the option
-                            hint = hints is { Count: > 0 }
-                                ? string.Join("; ", hints.Select(h => h?.ToString()))
-                                : null,
+                            hint = FormatIncidentHint(hints),
                         });
                     }
 
@@ -183,6 +181,30 @@ public partial class InquiryTools
         });
     }
 
+#if v1313 || v1315 || v152
+    private static string? FormatIncidentHint(TaleWorlds.CampaignSystem.Incidents.IncidentHint hint)
+    {
+        var parts = new List<string>();
+        AddIncidentHintText(hint, parts);
+        return parts.Count == 0 ? null : string.Join("; ", parts);
+    }
+
+    private static void AddIncidentHintText(
+        TaleWorlds.CampaignSystem.Incidents.IncidentHint hint,
+        List<string> parts)
+    {
+        var text = hint.Text?.ToString();
+        if (!string.IsNullOrWhiteSpace(text))
+            parts.Add(text!);
+
+        foreach (var child in hint.Children)
+        {
+            if (child != null)
+                AddIncidentHintText(child, parts);
+        }
+    }
+#endif
+
     [Tool("ui/answer_inquiry", Description = "Answer the current popup inquiry or incident. For yes/no: use affirmative=true/false. For multi-selection: provide selectedIndices and affirmative=true. For incidents: provide selectedIndices with the option index (e.g. '1') and affirmative=true.")]
     public partial Task<object> AnswerInquiry(
         [ToolParameter(Description = "true for affirmative/confirm, false for negative/cancel")] bool affirmative,
@@ -190,7 +212,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 // Handle Incident (random event popup, v1.3.x+)
                 if (InquiryState.CurrentIncident != null && InquiryState.CurrentIncidentView != null)
                 {

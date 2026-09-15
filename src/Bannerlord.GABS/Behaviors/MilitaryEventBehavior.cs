@@ -1,4 +1,4 @@
-﻿using Lib.GAB.Events;
+using Lib.GAB.Events;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
@@ -30,7 +30,7 @@ public class MilitaryEventBehavior : BridgeEventBehaviorBase
         CampaignEvents.ArmyCreated.AddNonSerializedListener(this, OnArmyCreated);
         CampaignEvents.ArmyDispersed.AddNonSerializedListener(this, OnArmyDispersed);
         CampaignEvents.OnPartyJoinedArmyEvent.AddNonSerializedListener(this, OnPartyJoinedArmy);
-#if v1313 || v1315
+#if v1313 || v1315 || v152
             CampaignEvents.OnPartyLeftArmyEvent.AddNonSerializedListener(this, OnPartyLeftArmy);
 #endif
         CampaignEvents.OnSiegeEventStartedEvent.AddNonSerializedListener(this, OnSiegeStarted);
@@ -71,7 +71,7 @@ public class MilitaryEventBehavior : BridgeEventBehaviorBase
         });
     }
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
         private void OnPartyLeftArmy(MobileParty? party, Army? army)
         {
             Emit("campaign/party_left_army", new

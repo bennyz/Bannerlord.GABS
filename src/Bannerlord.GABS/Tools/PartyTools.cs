@@ -1,4 +1,4 @@
-﻿// ReSharper disable InvalidXmlDocComment
+// ReSharper disable InvalidXmlDocComment
 // ReSharper disable UnusedMember.Global
 
 using Bannerlord.GABS.Patches;
@@ -107,6 +107,35 @@ public partial class PartyTools
                 return new { error = "No main party" };
 
             return SerializeParty(party, detailed: true);
+        });
+    }
+
+    [Tool("party/set_encounter_protection", Description = "Enable or disable cheat protection for the player's party during unattended campaign-map playtests. While enabled, AI parties ignore the player and the player's party AI does not choose new goals. Reapply before very long runs because the ignore window is measured in campaign hours.")]
+    public partial Task<object> SetEncounterProtection(
+        [ToolParameter(Description = "true to suppress encounters; false to restore normal party AI decisions and visibility to other parties")] bool enabled,
+        [ToolParameter(Description = "Campaign hours for other parties to ignore the player (1-10000 when enabling; use 168 for a week)")] int hours)
+    {
+        return MainThreadDispatcher.EnqueueAsync<object>(() =>
+        {
+            if (Campaign.Current == null)
+                return new { error = "No active campaign" };
+
+            var party = MobileParty.MainParty;
+            if (party == null)
+                return new { error = "No main party" };
+
+            if (enabled && hours is < 1 or > 10000)
+                return new { error = "Hours must be between 1 and 10000 when encounter protection is enabled" };
+
+            party.Ai.SetDoNotMakeNewDecisions(enabled);
+            party.IgnoreForHours(enabled ? hours : 0);
+
+            return new
+            {
+                enabled,
+                ignoreHours = enabled ? hours : 0,
+                party = party.Name?.ToString(),
+            };
         });
     }
 
@@ -256,7 +285,7 @@ public partial class PartyTools
             if (settlement == null)
                 return new { error = $"Settlement not found: {settlementNameOrId}" };
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 SetPartyAiAction.GetActionForVisitingSettlement(party, settlement, MobileParty.NavigationType.Default, false, false);
 #else
             SetPartyAiAction.GetActionForVisitingSettlement(party, settlement);
@@ -286,7 +315,7 @@ public partial class PartyTools
             if (party == null)
                 return new { error = "No main party" };
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 var target = new CampaignVec2(new Vec2(x, y), true);
                 party.SetMoveGoToPoint(target, MobileParty.NavigationType.Default);
 #else
@@ -325,7 +354,7 @@ public partial class PartyTools
             if (target == null)
                 return new { error = $"Party not found: {targetNameOrId}" };
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 SetPartyAiAction.GetActionForEscortingParty(party, target, MobileParty.NavigationType.Default, false, false);
 #else
             SetPartyAiAction.GetActionForEscortingParty(party, target);
@@ -386,7 +415,7 @@ public partial class PartyTools
             }
 
             // Far away — move toward the target and start tracking
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 var targetPos = new CampaignVec2(target.GetPosition2D, true);
                 party.SetMoveGoToPoint(targetPos, MobileParty.NavigationType.Default);
 #else
@@ -526,7 +555,7 @@ public partial class PartyTools
                 return new { error = "No friendly settlement found to flee to" };
 
             var target = safeSettlement.settlement;
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 SetPartyAiAction.GetActionForVisitingSettlement(player, target, MobileParty.NavigationType.Default, false, false);
 #else
             SetPartyAiAction.GetActionForVisitingSettlement(player, target);
@@ -657,7 +686,7 @@ public partial class PartyTools
                             /// Troop tier level
                             tier = notable.VolunteerTypes[i]!.Tier,
                             /// Recruitment cost in gold
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                                 cost = wageModel.GetTroopRecruitmentCost(notable.VolunteerTypes[i]!, buyer).ResultNumber,
 #else
                             cost = wageModel.GetTroopRecruitmentCost(notable.VolunteerTypes[i]!, buyer, false),
@@ -736,7 +765,7 @@ public partial class PartyTools
             if (slotIndex >= maxIndex)
                 return new { error = $"Insufficient relation to recruit from slot {slotIndex} (need higher relation with {notableName})" };
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                 var cost = (int) Campaign.Current.Models.PartyWageModel
                     .GetTroopRecruitmentCost(troop, buyer).ResultNumber;
 #else
@@ -813,7 +842,7 @@ public partial class PartyTools
                     var troop = notable.VolunteerTypes[i];
                     if (troop == null) continue;
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                         var cost = (int) wageModel.GetTroopRecruitmentCost(troop, buyer).ResultNumber;
 #else
                     var cost = wageModel.GetTroopRecruitmentCost(troop, buyer, false);
@@ -908,7 +937,7 @@ public partial class PartyTools
                     {
                         result.Done = true;
                         result.Reason = "incident";
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                             result.InterruptDetail = $"Random event: {InquiryState.CurrentIncident.Title?.ToString()}";
 #else
                         result.InterruptDetail = "Random event";
@@ -981,7 +1010,7 @@ public partial class PartyTools
                             }
                             else
                             {
-#if v1313 || v1315
+#if v1313 || v1315 || v152
                                     var targetPos = new CampaignVec2(trackTarget.GetPosition2D, true);
                                     party.SetMoveGoToPoint(targetPos, MobileParty.NavigationType.Default);
 #else

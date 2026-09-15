@@ -1,4 +1,4 @@
-﻿// ReSharper disable InvalidXmlDocComment
+// ReSharper disable InvalidXmlDocComment
 // ReSharper disable UnusedMember.Global
 
 using HarmonyLib;
@@ -9,6 +9,7 @@ using Lib.GAB.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -605,7 +606,7 @@ public partial class GauntletUITools
     private static List<MovieEntry> GetMovies(GauntletLayer layer)
     {
         var result = new List<MovieEntry>();
-#if v1313 || v1315
+#if v1313 || v1315 || v152
             if (MovieIdentifiersField?.Invoke(layer) is { } enumerable)
             {
                 foreach (var item in enumerable)
@@ -771,6 +772,79 @@ public partial class GauntletUITools
             catch (Exception ex)
             {
                 return new { error = $"GetViewModelProperty failed: {ex.Message}" };
+            }
+        });
+    }
+
+    [Tool("ui/set_viewmodel_property", Description = "Set a writable property on a ViewModel on the current screen. Supports dot-notation paths for nested ViewModels. Intended for filling text and numeric fields that cannot be operated reliably through button clicks alone.")]
+    public partial Task<object> SetViewModelProperty(
+        [ToolParameter(Description = "Writable property path on the ViewModel, such as 'OrderQuantity' or 'NestedForm.LimitPrice'")] string propertyName,
+        [ToolParameter(Description = "Name of the layer (from get_screen)")] string layerName,
+        [ToolParameter(Description = "Value to assign. It is converted using the property's declared type and invariant culture.")] string value)
+    {
+        return MainThreadDispatcher.EnqueueAsync<object>(() =>
+        {
+            try
+            {
+                var screen = ScreenManager.TopScreen;
+                if (screen == null) return new { error = "No active screen" };
+
+                foreach (var layer in screen.Layers)
+                {
+                    if (layer is not GauntletLayer gauntletLayer ||
+                        !string.Equals(layer.Name, layerName, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    foreach (var movie in GetMovies(gauntletLayer))
+                    {
+                        var dataSource = movie.DataSource;
+                        if (dataSource == null) continue;
+
+                        var separator = propertyName.LastIndexOf('.');
+                        var ownerPath = separator >= 0 ? propertyName.Substring(0, separator) : null;
+                        var leafName = separator >= 0 ? propertyName.Substring(separator + 1) : propertyName;
+                        var owner = dataSource;
+
+                        if (!string.IsNullOrWhiteSpace(ownerPath))
+                        {
+                            var (nestedOwner, _) = TraversePropertyPath(dataSource, ownerPath!);
+                            if (nestedOwner == null) continue;
+                            owner = nestedOwner;
+                        }
+
+                        var property = owner.GetType().GetProperty(leafName,
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (property == null || !property.CanWrite) continue;
+
+                        var targetType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                        object? converted;
+                        if (targetType == typeof(string))
+                            converted = value;
+                        else if (targetType == typeof(bool))
+                            converted = bool.Parse(value);
+                        else if (targetType.IsEnum)
+                            converted = Enum.Parse(targetType, value, ignoreCase: true);
+                        else
+                            converted = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+
+                        var oldValue = property.GetValue(owner)?.ToString();
+                        property.SetValue(owner, converted);
+
+                        return new
+                        {
+                            property = propertyName,
+                            viewModel = owner.GetType().Name,
+                            oldValue,
+                            newValue = property.GetValue(owner)?.ToString(),
+                        };
+                    }
+                }
+
+                return new { error = $"Writable property '{propertyName}' not found in layer '{layerName}'" };
+            }
+            catch (Exception ex)
+            {
+                return new { error = $"SetViewModelProperty failed: {ex.Message}" };
             }
         });
     }
