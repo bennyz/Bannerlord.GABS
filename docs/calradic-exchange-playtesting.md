@@ -68,3 +68,5 @@ Notes: unexpected behavior, ambiguity, or follow-up coverage
 ## Model guidance
 
 A smaller agent such as Luna can run a focused pass effectively when the scenario has explicit preconditions, a bounded workflow, and concrete assertions. Give it one scenario at a time. Prefer semantic tools and ViewModel state over coordinate-based visual clicking; use screenshots as evidence and for unexpected screens.
+
+The first prepared pass is [Luna: Gauntlet spot-order round trip](scenarios/luna-gauntlet-spot-roundtrip.md).
