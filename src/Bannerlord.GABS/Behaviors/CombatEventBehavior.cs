@@ -1,4 +1,4 @@
-﻿using Lib.GAB.Events;
+using Lib.GAB.Events;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.MapEvents;
@@ -66,7 +66,7 @@ public class CombatEventBehavior : BridgeEventBehaviorBase
             winner = mapEvent.WinningSide.ToString(),
             attackerLeader = mapEvent.AttackerSide?.LeaderParty?.Name?.ToString(),
             defenderLeader = mapEvent.DefenderSide?.LeaderParty?.Name?.ToString(),
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
                 attackerCasualties = mapEvent.AttackerSide?.TroopCasualties ?? 0,
                 defenderCasualties = mapEvent.DefenderSide?.TroopCasualties ?? 0,
 #else
@@ -87,7 +87,7 @@ public class CombatEventBehavior : BridgeEventBehaviorBase
             winner = mapEvent.WinningSide.ToString(),
             attackerLeader = mapEvent.AttackerSide?.LeaderParty?.Name?.ToString(),
             defenderLeader = mapEvent.DefenderSide?.LeaderParty?.Name?.ToString(),
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
                 attackerCasualties = mapEvent.AttackerSide?.TroopCasualties ?? 0,
                 defenderCasualties = mapEvent.DefenderSide?.TroopCasualties ?? 0,
 #else

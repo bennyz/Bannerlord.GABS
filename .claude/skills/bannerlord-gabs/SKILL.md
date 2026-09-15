@@ -35,6 +35,18 @@ Call `bannerlord.core.check_blockers` to verify the game is in a clean state. Co
 - `inquiry_active` — handle with `ui/get_inquiry` + `ui/answer_inquiry`
 - `mission_active` — exit with `mission/leave`
 
+## Cheat-Assisted Playtests
+
+Cheats may establish preconditions, but the feature under test should still be exercised through its player-facing UI. For Calradic Exchange test passes:
+
+1. Enable cheats with `core/set_cheat_mode` and add setup funds with `inventory/add_gold`.
+2. Enable `party/set_encounter_protection` before long campaign-map runs.
+3. Use `core/set_time_speed` with speed 10 for accelerated campaign time; call `core/check_blockers` first and pause with speed 0 before UI assertions.
+4. Use `ui/set_viewmodel_property` for editable Gauntlet form fields, then invoke the same submit/cancel methods a player uses.
+5. Capture a screenshot and query the resulting ViewModel or `cx.*` console diagnostics. Record both the visible result and the direct state evidence.
+
+Read `docs/calradic-exchange-playtesting.md` for the full protocol and reporting template.
+
 ## Conversations
 
 To talk to NPCs at a settlement, use `conversation/start` (not 3D scenes). The player character has no movement or combat controls in 3D missions — always prefer map conversations.

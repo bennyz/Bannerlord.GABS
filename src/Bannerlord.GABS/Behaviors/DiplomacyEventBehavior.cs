@@ -1,4 +1,4 @@
-﻿using Lib.GAB.Events;
+using Lib.GAB.Events;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
@@ -47,7 +47,7 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
         // Diplomacy
         CampaignEvents.WarDeclared.AddNonSerializedListener(this, OnWarDeclared);
         CampaignEvents.MakePeace.AddNonSerializedListener(this, OnPeaceMade);
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
             CampaignEvents.OnAllianceStartedEvent.AddNonSerializedListener(this, OnAllianceStarted);
             CampaignEvents.OnAllianceEndedEvent.AddNonSerializedListener(this, OnAllianceEnded);
 #endif
@@ -59,19 +59,19 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
         CampaignEvents.KingdomDecisionConcluded.AddNonSerializedListener(this, OnKingdomDecisionConcluded);
         CampaignEvents.OnClanChangedKingdomEvent.AddNonSerializedListener(this, OnClanChangedKingdom);
         CampaignEvents.OnClanLeaderChangedEvent.AddNonSerializedListener(this, OnClanLeaderChanged);
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
             CampaignEvents.OnClanDefectedEvent.AddNonSerializedListener(this, OnClanDefected);
 #endif
         CampaignEvents.RulingClanChanged.AddNonSerializedListener(this, OnRulingClanChanged);
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
             // Mercenary & vassal (v1.3.x+)
             CampaignEvents.OnMercenaryServiceStartedEvent.AddNonSerializedListener(this, OnMercenaryServiceStarted);
             CampaignEvents.OnMercenaryServiceEndedEvent.AddNonSerializedListener(this, OnMercenaryServiceEnded);
 #endif
 
         // Offers & proposals
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
             CampaignEvents.OnPeaceOfferedToPlayerEvent.AddNonSerializedListener(this, OnPeaceOffered);
 #endif
         CampaignEvents.OnMarriageOfferedToPlayerEvent.AddNonSerializedListener(this, OnMarriageOffered);
@@ -101,7 +101,7 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
         });
     }
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
         private void OnAllianceStarted(Kingdom? kingdom1, Kingdom? kingdom2)
         {
             Emit("campaign/alliance_started", new
@@ -188,7 +188,7 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
         });
     }
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
         private void OnClanDefected(Clan? clan, Kingdom? oldKingdom, Kingdom? newKingdom)
         {
             Emit("campaign/clan_defected", new
@@ -210,7 +210,7 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
         });
     }
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
         private void OnMercenaryServiceStarted(Clan? mercenaryClan, StartMercenaryServiceAction.StartMercenaryServiceActionDetails details)
         {
             Emit("campaign/mercenary_service_started", new
@@ -234,7 +234,7 @@ public class DiplomacyEventBehavior : BridgeEventBehaviorBase
 
     // --- Offers & Proposals ---
 
-#if v1313 || v1315
+#if v1313 || v1315 || v152 || v153
         private void OnPeaceOffered(IFaction? opponentFaction, int tributeAmount, int tributeDurationInDays)
         {
             Emit("campaign/peace_offered", new

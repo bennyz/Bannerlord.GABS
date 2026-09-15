@@ -20,7 +20,8 @@ AI Agent ←— MCP —→ GABS (Go binary) ←— GABP (TCP) —→ Bannerlord.
 | **UI Interaction**   | Click buttons, read ViewModels, navigate any Gauntlet UI screen              |
 | **Combat**           | Auto-resolve battles (Send Troops), manage formations, retreat               |
 | **Threat Detection** | Scan for hostiles, direction-aware flee to safety                            |
-| **Game Management**  | Start new games, load/save, skip videos, advance time                        |
+| **Game Management**  | Start new games, load/save, skip videos, accelerate campaign time            |
+| **Playtest Setup**    | Add gold, suppress encounters, and fill writable ViewModel form fields       |
 
 ## Quick Start
 
@@ -94,7 +95,7 @@ See [docs/setup-guide.md](docs/setup-guide.md) for detailed setup instructions.
 | ---------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | `core/*`         | ping, get_game_state, load_save, save_game, set_time_speed, check_blockers, new_game, ...                | Game lifecycle and state      |
 | `hero/*`         | get_player, get_hero, list_heroes, get_skills, get_traits, get_relationships, kill_hero                  | Hero information and actions  |
-| `party/*`        | get_player_party, move_to_settlement, recruit_all, detect_threats, flee_to_safety, wait_for_arrival, ... | Party movement and management |
+| `party/*`        | get_player_party, set_encounter_protection, move_to_settlement, recruit_all, detect_threats, flee_to_safety, wait_for_arrival, ... | Party movement and management |
 | `settlement/*`   | list_settlements, get_settlement, get_market_prices, get_workshops                                       | Settlement queries            |
 | `kingdom/*`      | list_kingdoms, get_kingdom, get_clan, list_wars                                                          | Kingdom and diplomacy info    |
 | `inventory/*`    | get_inventory, buy_item, sell_item, add_gold, give_gold                                                  | Economy and items             |
@@ -102,7 +103,7 @@ See [docs/setup-guide.md](docs/setup-guide.md) for detailed setup instructions.
 | `conversation/*` | start, get_state, select_option, continue, get_persuasion, wait_for_state                                | NPC dialogue                  |
 | `menu/*`         | get_current, select_option                                                                               | Game menu interaction         |
 | `barter/*`       | get_state, offer_item, accept, cancel                                                                    | Trading with NPCs             |
-| `ui/*`           | get_screen, click_widget, get_viewmodel_property, call_viewmodel_method, answer_inquiry, ...             | Universal UI interaction      |
+| `ui/*`           | get_screen, click_widget, get/set_viewmodel_property, call_viewmodel_method, answer_inquiry, ...         | Universal UI interaction      |
 | `battle/*`       | get_state, get_formations, order_charge, order_hold, order_retreat, ...                                  | Battle commands               |
 | `quest/*`        | list_quests, get_quest                                                                                   | Quest tracking                |
 | `history/*`      | get_recent_events, get_events_by_type                                                                    | Campaign event history        |
@@ -127,11 +128,14 @@ Most game screens are accessible through `ui/get_screen`, `ui/click_widget`, and
 - **Array indexing**: `WeaponDesign.PieceLists[0].Pieces`
 - **Deep paths**: `WeaponDesign.PieceLists[0].SelectedPiece.TierText`
 
+Writable form fields can be filled with `ui/set_viewmodel_property`, including nested paths. This is useful for Gauntlet text-entry widgets that do not expose keyboard input through the normal click tools.
+
 ## Documentation
 
 ### Setup
 
 - [Setup Guide](docs/setup-guide.md) — Install GABS, configure Bannerlord, add MCP, deploy the mod
+- [Calradic Exchange Playtesting](docs/calradic-exchange-playtesting.md) — Cheat-assisted setup and evidence protocol for useful test passes
 
 ### Gameplay Guides
 
