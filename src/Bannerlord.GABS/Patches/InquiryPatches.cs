@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
 using TaleWorlds.CampaignSystem.Incidents;
 #endif
 using TaleWorlds.Core;
@@ -81,7 +81,7 @@ internal static class HideSceneNotificationPatch
     }
 }
 
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
     /// <summary>
     /// Manually patches GauntletMapIncidentView.CreateLayout and OnFinalize
     /// to track the Incident system (random events like "Feeling the Bite").
@@ -177,7 +177,7 @@ internal static class InquiryState
     public static volatile InquiryData? CurrentInquiry;
     public static volatile MultiSelectionInquiryData? CurrentMultiSelection;
     public static volatile TextInquiryData? CurrentTextInquiry;
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
         public static volatile Incident? CurrentIncident;
 #else
     public static volatile object? CurrentIncident;

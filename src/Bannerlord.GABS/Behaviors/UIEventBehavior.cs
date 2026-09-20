@@ -59,7 +59,7 @@ public class UIEventBehavior : BridgeEventBehaviorBase
         // Persuasion
         CampaignEvents.PersuasionProgressCommittedEvent.AddNonSerializedListener(this, OnPersuasionProgress);
 
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
             // Random events (v1.3.x+)
             CampaignEvents.OnIncidentResolvedEvent.AddNonSerializedListener(this, OnIncidentResolved);
 #endif
@@ -73,7 +73,7 @@ public class UIEventBehavior : BridgeEventBehaviorBase
         var hasIncident = InquiryState.CurrentIncident != null;
         if (hasIncident && !_hadIncident)
         {
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
                 var incident = InquiryState.CurrentIncident;
                 Emit("campaign/inquiry_shown", new
                 {
@@ -169,7 +169,7 @@ public class UIEventBehavior : BridgeEventBehaviorBase
 
     // --- Random Events ---
 
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
         private void OnIncidentResolved(TaleWorlds.CampaignSystem.Incidents.Incident? incident)
         {
             Emit("campaign/incident_resolved", new

@@ -23,7 +23,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
                 // Check for Incident (random event popup) first — most common blocker (v1.3.x+)
                 if (InquiryState.CurrentIncident != null)
                 {
@@ -181,7 +181,19 @@ public partial class InquiryTools
         });
     }
 
-#if v1313 || v1315 || v152 || v153
+#if v148
+    // 1.4.8 has the Incident system but no IncidentHint tree: GetOptionHint returns the flat
+    // list of hint lines directly.
+    private static string? FormatIncidentHint(List<TaleWorlds.Localization.TextObject> hints)
+    {
+        var parts = hints?
+            .Select(h => h?.ToString())
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Select(s => s!)
+            .ToList() ?? new List<string>();
+        return parts.Count == 0 ? null : string.Join("; ", parts);
+    }
+#elif v1313 || v1315 || v152 || v153
     private static string? FormatIncidentHint(TaleWorlds.CampaignSystem.Incidents.IncidentHint hint)
     {
         var parts = new List<string>();
@@ -212,7 +224,7 @@ public partial class InquiryTools
     {
         return MainThreadDispatcher.EnqueueAsync<object>(() =>
         {
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
                 // Handle Incident (random event popup, v1.3.x+)
                 if (InquiryState.CurrentIncident != null && InquiryState.CurrentIncidentView != null)
                 {
