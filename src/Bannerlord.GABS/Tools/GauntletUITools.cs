@@ -606,7 +606,7 @@ public partial class GauntletUITools
     private static List<MovieEntry> GetMovies(GauntletLayer layer)
     {
         var result = new List<MovieEntry>();
-#if v1313 || v1315 || v152 || v153
+#if v1313 || v1315 || v148 || v152 || v153
             if (MovieIdentifiersField?.Invoke(layer) is { } enumerable)
             {
                 foreach (var item in enumerable)
